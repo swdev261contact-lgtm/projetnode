@@ -56,55 +56,71 @@ src/
 └── server.js             # Point d'entrée
 ```
 
-## Installation
+## Installation et Démarrage
 
-1. Cloner le dépôt
-```bash
-git clone <repository-url>
-cd palets-competition-api
-```
-
-2. Installer les dépendances
+### 1. Installer les dépendances
 ```bash
 npm install
 ```
 
-3. Configurer les variables d'environnement
-```bash
-cp .env.example .env
-```
+### 2. Vérifier les variables d'environnement
 
-Modifier le fichier `.env` avec vos paramètres :
+Le fichier `.env` est déjà configuré pour MongoDB local :
 ```env
 NODE_ENV=development
 PORT=5000
-
 MONGODB_URI=mongodb://localhost:27017/palets-competition
-
-JWT_SECRET=votre_secret_jwt_tres_complexe
-JWT_EXPIRE=7d
-
-UPLOAD_PATH=uploads
-MAX_FILE_SIZE=5242880
+JWT_SECRET=votre_secret_jwt_tres_complexe_changez_moi_en_production
 ```
 
-4. Démarrer MongoDB
-```bash
-# Avec Docker
-docker run -d -p 27017:27017 --name mongodb mongo
+### 3. Démarrer MongoDB
 
-# Ou utiliser MongoDB installé localement
+**Sur Windows/Mac/Linux (avec MongoDB installé localement)**
+```bash
 mongod
 ```
 
-5. Lancer le serveur
+**Avec Docker (recommandé)**
 ```bash
-# Mode développement
+docker run -d -p 27017:27017 --name mongodb mongo
+```
+
+### 4. Créer le compte admin
+
+Dans un nouveau terminal, exécutez :
+```bash
+npm run create-admin
+```
+
+Cela crée un compte avec :
+- **Email** : `admin@davidjeux.com`
+- **Mot de passe** : `admin123`
+
+### 5. Lancer le serveur
+
+```bash
+# Mode développement (avec rechargement automatique)
 npm run dev
 
 # Mode production
 npm start
 ```
+
+Le serveur démarrera sur `http://localhost:5000`
+
+### 6. Tester la connexion admin
+
+Utilisez l'endpoint de connexion :
+```bash
+curl -X POST http://localhost:5000/api/auth/admin/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "admin@davidjeux.com",
+    "password": "admin123"
+  }'
+```
+
+Ou consultez le guide [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) pour plus de détails.
 
 ## API Endpoints
 

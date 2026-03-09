@@ -4,13 +4,17 @@ const Admin = require('../models/Admin');
 
 const createAdmin = async () => {
   try {
-    await mongoose.connect(process.env.MONGODB_URI);
-    console.log('MongoDB connecté');
+    await mongoose.connect(process.env.MONGODB_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    console.log('✓ MongoDB connecté');
 
     const existingAdmin = await Admin.findOne({ email: 'admin@davidjeux.com' });
 
     if (existingAdmin) {
-      console.log('Un compte admin existe déjà avec cet email');
+      console.log('⚠ Un compte admin existe déjà avec cet email');
+      console.log('Email: admin@davidjeux.com');
       process.exit(0);
     }
 
@@ -20,14 +24,17 @@ const createAdmin = async () => {
       password: 'admin123'
     });
 
-    console.log('Compte admin créé avec succès:');
+    console.log('\n✓ Compte admin créé avec succès!');
+    console.log('\n--- Identifiants de connexion ---');
     console.log('Email: admin@davidjeux.com');
     console.log('Mot de passe: admin123');
-    console.log('\nIMPORTANT: Changez ce mot de passe après la première connexion!');
+    console.log('\n⚠ IMPORTANT: Changez ce mot de passe après la première connexion!');
 
+    await mongoose.connection.close();
     process.exit(0);
   } catch (error) {
-    console.error('Erreur lors de la création du compte admin:', error);
+    console.error('✗ Erreur lors de la création du compte admin:');
+    console.error(error.message);
     process.exit(1);
   }
 };

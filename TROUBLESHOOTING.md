@@ -1,65 +1,83 @@
-# Guide de Dépannage
+# Guide de Dépannage - Problème de Connexion Admin
 
-## Problème : Impossible de se connecter au compte admin
+## Problème
+Impossible de se connecter au compte admin.
 
-### Cause
-Le compte admin n'existe pas encore dans la base de données MongoDB.
+## Cause
+Le compte admin n'existe pas encore dans MongoDB.
 
-### Solution
+## Solution
 
-#### Étape 1 : Démarrer MongoDB
+### Étape 1 : S'assurer que MongoDB fonctionne
 
-Vous devez avoir MongoDB en cours d'exécution. Choisissez une option :
+Vérifiez que MongoDB est en cours d'exécution sur votre machine :
 
-**Option A : Avec Docker (recommandé)**
-```bash
-docker run -d -p 27017:27017 --name mongodb mongo
-```
-
-**Option B : MongoDB installé localement**
+**Option A : MongoDB installé localement**
 ```bash
 mongod
 ```
 
-**Option C : Utiliser MongoDB Atlas (cloud)**
+**Option B : Avec Docker**
+```bash
+docker run -d -p 27017:27017 --name mongodb mongo
+```
+
+**Option C : MongoDB Atlas (cloud)**
 1. Créez un compte sur [MongoDB Atlas](https://www.mongodb.com/cloud/atlas)
 2. Créez un cluster gratuit
-3. Obtenez votre URL de connexion
-4. Modifiez la variable `MONGODB_URI` dans le fichier `.env`
+3. Récupérez l'URL de connexion
+4. Mettez à jour `MONGODB_URI` dans `.env`
 
-#### Étape 2 : Créer le compte admin
+### Étape 2 : Créer le compte admin
+
+Une fois MongoDB démarré, exécutez :
 
 ```bash
 npm run create-admin
 ```
 
-Ce script va créer un compte admin avec les identifiants suivants :
+Ce script crée automatiquement un compte admin avec :
 - **Email** : `admin@davidjeux.com`
 - **Mot de passe** : `admin123`
 
-#### Étape 3 : Démarrer le serveur
+Vous devriez voir :
+```
+✓ MongoDB connecté
+✓ Compte admin créé avec succès!
+
+--- Identifiants de connexion ---
+Email: admin@davidjeux.com
+Mot de passe: admin123
+
+⚠ IMPORTANT: Changez ce mot de passe après la première connexion!
+```
+
+### Étape 3 : Démarrer le serveur
 
 ```bash
 npm run dev
 ```
 
-#### Étape 4 : Se connecter
+### Étape 4 : Tester la connexion admin
 
-Utilisez Postman ou curl pour vous connecter :
-
+Avec cURL :
 ```bash
 curl -X POST http://localhost:5000/api/auth/admin/login \
   -H "Content-Type: application/json" \
-  -d '{
-    "email": "admin@davidjeux.com",
-    "password": "admin123"
-  }'
+  -d '{"email": "admin@davidjeux.com", "password": "admin123"}'
 ```
 
-### Vérification
+Ou avec Postman :
+- URL : `POST http://localhost:5000/api/auth/admin/login`
+- Body (JSON) :
+```json
+{
+  "email": "admin@davidjeux.com",
+  "password": "admin123"
+}
+```
 
-Si tout fonctionne, vous devriez recevoir une réponse avec un token JWT :
-
+**Réponse attendue** :
 ```json
 {
   "success": true,
@@ -76,22 +94,19 @@ Si tout fonctionne, vous devriez recevoir une réponse avec un token JWT :
 }
 ```
 
-## Autres problèmes courants
+## Erreurs courantes
 
-### Erreur : "MongoDB connecté: undefined"
+### "MongoDB connecté: undefined"
+MongoDB n'est pas démarré. Lancez `mongod` ou Docker.
 
-Votre MongoDB n'est pas démarré. Suivez l'Étape 1 ci-dessus.
+### "Un compte admin existe déjà"
+Le compte existe déjà. Utilisez les identifiants par défaut ou supprimez la base MongoDB.
 
-### Erreur : "Un compte admin existe déjà"
-
-Le compte admin existe déjà. Utilisez les identifiants par défaut ou réinitialisez la base de données.
-
-### Erreur : "Identifiants invalides"
-
-Vérifiez que vous utilisez les bons identifiants :
+### "Identifiants invalides"
+Vérifiez l'email et le mot de passe :
 - Email : `admin@davidjeux.com`
 - Mot de passe : `admin123`
 
-### Port déjà utilisé
-
-Si le port 5000 est déjà utilisé, modifiez la variable `PORT` dans le fichier `.env`.
+### "Erreur de connexion à MongoDB"
+1. Vérifiez que MongoDB écoute sur `localhost:27017`
+2. Vérifiez `MONGODB_URI` dans le fichier `.env`
