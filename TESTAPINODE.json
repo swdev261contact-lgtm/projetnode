@@ -1,0 +1,884 @@
+{
+  "info": {
+    "name": "API Gestion Compétitions de Palets",
+    "description": "Collection complète pour tester l'API de gestion de compétitions de palets",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000/api",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "joueurId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "clubId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "competitionId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "inscriptionId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Inscription Joueur",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.collectionVariables.set('token', jsonData.data.token);",
+                  "    pm.collectionVariables.set('joueurId', jsonData.data.joueur.id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nom\": \"Dupont\",\n  \"prenom\": \"Jean\",\n  \"email\": \"jean.dupont@example.com\",\n  \"password\": \"password123\",\n  \"dateNaissance\": \"1990-05-15\",\n  \"nationalite\": \"France\",\n  \"mainForte\": \"droitier\",\n  \"categorie\": \"homme\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/joueur/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "joueur", "register"]
+            }
+          }
+        },
+        {
+          "name": "Connexion Joueur",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.collectionVariables.set('token', jsonData.data.token);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"jean.dupont@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/joueur/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "joueur", "login"]
+            }
+          }
+        },
+        {
+          "name": "Connexion Club",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.collectionVariables.set('token', jsonData.data.token);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"club@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/club/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "club", "login"]
+            }
+          }
+        },
+        {
+          "name": "Connexion Admin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.collectionVariables.set('token', jsonData.data.token);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@davidjeux.com\",\n  \"password\": \"admin123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/admin/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "admin", "login"]
+            }
+          }
+        },
+        {
+          "name": "Obtenir profil utilisateur",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "me"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Clubs",
+      "item": [
+        {
+          "name": "Créer un club",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.collectionVariables.set('clubId', jsonData.data.club._id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nom\": \"Club de Palets de Nantes\",\n  \"email\": \"contact@paletsnantes.fr\",\n  \"password\": \"club123\",\n  \"region\": \"Pays de la Loire\",\n  \"departement\": \"Loire-Atlantique\",\n  \"joursEntrainement\": [\"Mercredi\", \"Samedi\"],\n  \"horaires\": \"14h-18h\",\n  \"contactReferent\": {\n    \"nom\": \"Martin Pierre\",\n    \"telephone\": \"0612345678\",\n    \"email\": \"pierre.martin@example.com\"\n  },\n  \"disciplines\": {\n    \"paletFonteBois\": true,\n    \"paletFontePlomb\": true,\n    \"paletLaitonPlomb\": false\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/clubs",
+              "host": ["{{baseUrl}}"],
+              "path": ["clubs"]
+            }
+          }
+        },
+        {
+          "name": "Obtenir tous les clubs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/clubs?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["clubs"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "region",
+                  "value": "Bretagne",
+                  "disabled": true
+                },
+                {
+                  "key": "departement",
+                  "value": "Finistère",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Obtenir un club",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/clubs/{{clubId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["clubs", "{{clubId}}"]
+            }
+          }
+        },
+        {
+          "name": "Modifier un club",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"horaires\": \"15h-19h\",\n  \"joursEntrainement\": [\"Mercredi\", \"Vendredi\", \"Samedi\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/clubs/{{clubId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["clubs", "{{clubId}}"]
+            }
+          }
+        },
+        {
+          "name": "Supprimer un club",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/clubs/{{clubId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["clubs", "{{clubId}}"]
+            }
+          }
+        },
+        {
+          "name": "Obtenir joueurs d'un club",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/clubs/{{clubId}}/joueurs?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["clubs", "{{clubId}}", "joueurs"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Joueurs",
+      "item": [
+        {
+          "name": "Obtenir tous les joueurs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/joueurs?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["joueurs"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "categorie",
+                  "value": "homme",
+                  "disabled": true
+                },
+                {
+                  "key": "search",
+                  "value": "Dupont",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Obtenir un joueur",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/joueurs/{{joueurId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["joueurs", "{{joueurId}}"]
+            }
+          }
+        },
+        {
+          "name": "Modifier un joueur",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"mainForte\": \"ambidextre\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/joueurs/{{joueurId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["joueurs", "{{joueurId}}"]
+            }
+          }
+        },
+        {
+          "name": "Ajouter un club à un joueur",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"clubId\": \"{{clubId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/joueurs/{{joueurId}}/clubs",
+              "host": ["{{baseUrl}}"],
+              "path": ["joueurs", "{{joueurId}}", "clubs"]
+            }
+          }
+        },
+        {
+          "name": "Retirer un club d'un joueur",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"clubId\": \"{{clubId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/joueurs/{{joueurId}}/clubs",
+              "host": ["{{baseUrl}}"],
+              "path": ["joueurs", "{{joueurId}}", "clubs"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Compétitions",
+      "item": [
+        {
+          "name": "Créer une compétition",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.collectionVariables.set('competitionId', jsonData.data._id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nomEvenement\": \"Championnat de Bretagne 2026\",\n  \"ville\": \"Rennes\",\n  \"date\": \"2026-06-15\",\n  \"nombrePlaces\": 128,\n  \"categories\": {\n    \"individuHomme\": true,\n    \"individuFemme\": true,\n    \"junior\": true,\n    \"doublette\": false\n  },\n  \"clubOrganisateur\": \"{{clubId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/competitions",
+              "host": ["{{baseUrl}}"],
+              "path": ["competitions"]
+            }
+          }
+        },
+        {
+          "name": "Obtenir toutes les compétitions",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/competitions?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["competitions"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "ville",
+                  "value": "Rennes",
+                  "disabled": true
+                },
+                {
+                  "key": "statut",
+                  "value": "inscriptions ouvertes",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Obtenir une compétition",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/competitions/{{competitionId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["competitions", "{{competitionId}}"]
+            }
+          }
+        },
+        {
+          "name": "Modifier une compétition",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"statut\": \"inscriptions ouvertes\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/competitions/{{competitionId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["competitions", "{{competitionId}}"]
+            }
+          }
+        },
+        {
+          "name": "Supprimer une compétition",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/competitions/{{competitionId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["competitions", "{{competitionId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Inscriptions",
+      "item": [
+        {
+          "name": "S'inscrire à une compétition",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.collectionVariables.set('inscriptionId', jsonData.data._id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"competitionId\": \"{{competitionId}}\",\n  \"categorieInscrite\": \"individuHomme\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/inscriptions",
+              "host": ["{{baseUrl}}"],
+              "path": ["inscriptions"]
+            }
+          }
+        },
+        {
+          "name": "Obtenir mes inscriptions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/inscriptions?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["inscriptions"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Obtenir une inscription",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/inscriptions/{{inscriptionId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["inscriptions", "{{inscriptionId}}"]
+            }
+          }
+        },
+        {
+          "name": "Annuler une inscription",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/inscriptions/{{inscriptionId}}/cancel",
+              "host": ["{{baseUrl}}"],
+              "path": ["inscriptions", "{{inscriptionId}}", "cancel"]
+            }
+          }
+        },
+        {
+          "name": "Obtenir participants d'une compétition",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/inscriptions/competition/{{competitionId}}/participants?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["inscriptions", "competition", "{{competitionId}}", "participants"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "categorie",
+                  "value": "individuHomme",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Résultats",
+      "item": [
+        {
+          "name": "Créer un résultat",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"competition\": \"{{competitionId}}\",\n  \"categorie\": \"individuHomme\",\n  \"vainqueur\": \"{{joueurId}}\",\n  \"deuxieme\": \"JOUEUR_ID_2\",\n  \"troisieme\": \"JOUEUR_ID_3\",\n  \"quatrieme\": \"JOUEUR_ID_4\",\n  \"videoFinale\": \"https://www.youtube.com/watch?v=example\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/resultats",
+              "host": ["{{baseUrl}}"],
+              "path": ["resultats"]
+            }
+          }
+        },
+        {
+          "name": "Obtenir tous les résultats",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/resultats?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["resultats"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "competition",
+                  "value": "{{competitionId}}",
+                  "disabled": true
+                },
+                {
+                  "key": "categorie",
+                  "value": "individuHomme",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Obtenir un résultat",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/resultats/RESULTAT_ID",
+              "host": ["{{baseUrl}}"],
+              "path": ["resultats", "RESULTAT_ID"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Classements",
+      "item": [
+        {
+          "name": "Obtenir classement global",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/classements?page=1&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["classements"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "key": "categorie",
+                  "value": "homme",
+                  "disabled": true
+                },
+                {
+                  "key": "region",
+                  "value": "Bretagne",
+                  "disabled": true
+                },
+                {
+                  "key": "departement",
+                  "value": "Finistère",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Obtenir classement personnalisé",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"joueurIds\": [\n    \"{{joueurId}}\",\n    \"JOUEUR_ID_2\",\n    \"JOUEUR_ID_3\"\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/classements/personnalise",
+              "host": ["{{baseUrl}}"],
+              "path": ["classements", "personnalise"]
+            }
+          }
+        },
+        {
+          "name": "Obtenir statistiques d'un joueur",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/classements/joueur/{{joueurId}}/stats",
+              "host": ["{{baseUrl}}"],
+              "path": ["classements", "joueur", "{{joueurId}}", "stats"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
